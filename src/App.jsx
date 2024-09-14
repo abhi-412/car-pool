@@ -7,9 +7,10 @@ import { RiSpeedFill } from "react-icons/ri";
 import { IoStopOutline,IoPlayOutline } from "react-icons/io5";
 import audio from "./assets/sound.mp3";
 import { MdMusicNote, MdMusicOff } from "react-icons/md";
+import Loader from './Loader';
 function App() {
   const [inMotion,setInMotion] = useState(false);
-  const [speed,setSpeeed] = useState(1);
+  const [speed,setSpeeed] = useState(10);
   const [rings,setRings] = useState(true);
   const [cubes,setCubes] = useState(true);
   const [car,setCar] = useState(true);
@@ -64,15 +65,13 @@ function App() {
 
 
   return (
+    <Suspense fallback={<Loader />}>
     <section className='w-full h-screen relative'>
-    <Suspense fallback={<p>Loading...</p>}>
+
       <Canvas shadows>
         <Car inMotion = {inMotion} speed={speed} rings={rings} cubes={cubes} car={car}/>
       </Canvas>
-    </Suspense>
-
-
-    <div id="drawer-navigation" className={`fixed xl:bottom-40 bottom-10  flex items-center justify-center p-4 right-10 z-40 `}>
+      <div id="drawer-navigation" className={`fixed xl:bottom-40 bottom-10  flex items-center justify-center p-4 right-10 z-40 `}>
 
 
 
@@ -81,7 +80,7 @@ function App() {
              <div className='flex flex-col gap-3'>
 
              <div className='flex gap-3 items-center justify-center'>
-                <button className='' onClick={()=>{setInMotion(!inMotion); inMotion && setSpeeed(1) }}>{inMotion ?<div className='flex gap-1 items-center'><IoStopOutline   className='text-xl text-red-600' /> <span>Stop</span></div> : <div className='flex gap-1 items-center'><IoPlayOutline className='text-xl text-green-600' />Start</div>}</button>
+                <button className='' onClick={()=>{setInMotion(!inMotion); inMotion && setSpeeed(1); isPlaying && handlePauseAudio()  }}>{inMotion ?<div className='flex gap-1 items-center'><IoStopOutline   className='text-xl text-red-600' /> <span>Stop</span></div> : <div className='flex gap-1 items-center'><IoPlayOutline className='text-xl text-green-600' />Start</div>}</button>
                 
                 <div className='flex gap-3'>
                 <button className={`flex gap-2 items-center ${isPlaying ? "hidden" : ""}`}  onClick={handlePlayAudio} hidden={isPlaying} disabled={isPlaying}>
@@ -125,11 +124,9 @@ function App() {
           </div>
         
       </div>
-
-
-
+      </section>
+    </Suspense>
     
-    </section>
   );
 }
 

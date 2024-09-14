@@ -10,3 +10,17 @@ html,body,#root,canvas{
   height: 100%;
   background-color: black;
 }
+
+
+input[type="range"]{
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 18rem;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: rgb(218, 218, 218);
+  height: 100%;
+}
