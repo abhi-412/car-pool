@@ -10,7 +10,7 @@ import FloatingGrid from './FloatingGrid';
 const Car = ({inMotion,speed,rings,cubes,car}) => {
   return (
     <>
-        <PerspectiveCamera fov={30} makeDefault position={[3, 2, 5]} />
+        <PerspectiveCamera fov={window.innerWidth > 768 ? 40 : 80} makeDefault position={[3, 2, 5]} />
         <OrbitControls target={[0,0.35,0]} maxPolarAngle={1.45}/>
 
         <color args={[0,0,0]} attach={"background"} />
