@@ -1,16 +1,68 @@
-import React, { createContext, Suspense, useState } from 'react';
+import React, { createContext, Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas } from "@react-three/fiber";
 import Car from './Models/CarShow';
 import './App.css';
 import { BsArrowRight,BsArrowLeft } from "react-icons/bs";
 import { RiSpeedFill } from "react-icons/ri";
 import { IoStopOutline,IoPlayOutline } from "react-icons/io5";
+import audio from "./assets/sound.mp3";
+import { MdMusicNote, MdMusicOff } from "react-icons/md";
 function App() {
   const [inMotion,setInMotion] = useState(false);
   const [speed,setSpeeed] = useState(1);
   const [rings,setRings] = useState(true);
   const [cubes,setCubes] = useState(true);
   const [car,setCar] = useState(true);
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+
+  useEffect(() => {
+    // Initialize the audio object
+    audioRef.current = new Audio(audio);
+    audioRef.current.volume = 0.4;
+    audioRef.current.loop = true;
+    audioRef.current.playbackRate = playbackRate;
+
+    // Clean up the audio object on component unmount
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+    };
+  }, [audio]);
+
+  const handleChangePlaybackRate = (v) => {
+    const rate = parseFloat(v);
+    setPlaybackRate(rate);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = rate;
+    }
+  };
+
+  const handlePlayAudio = () => {
+    if (audioRef.current && inMotion) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(error => {
+        console.error('Error playing audio:', error);
+      });
+    }else{
+      alert("Car must be in motion!!")
+    }
+  };
+
+  const handlePauseAudio = () => {
+    console.log(audioRef);
+    
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+
   return (
     <section className='w-full h-screen relative'>
     <Suspense fallback={<p>Loading...</p>}>
@@ -30,30 +82,38 @@ function App() {
 
              <div className='flex gap-3 items-center justify-center'>
                 <button className='' onClick={()=>{setInMotion(!inMotion); inMotion && setSpeeed(1) }}>{inMotion ?<div className='flex gap-1 items-center'><IoStopOutline   className='text-xl text-red-600' /> <span>Stop</span></div> : <div className='flex gap-1 items-center'><IoPlayOutline className='text-xl text-green-600' />Start</div>}</button>
+                
+                <div className='flex gap-3'>
+                <button className={`flex gap-2 items-center ${isPlaying ? "hidden" : ""}`}  onClick={handlePlayAudio} hidden={isPlaying} disabled={isPlaying}>
+                  <MdMusicNote /> Music
+                </button>
+                <button  className={`flex gap-2 items-center ${!isPlaying ? "hidden" : ""}`} onClick={handlePauseAudio} hidden={!isPlaying} disabled={!isPlaying}>
+                  <MdMusicOff /> Music
+                </button>
+              </div>
               </div>
 
              <div className='flex flex-col'>
-                  <div className='flex gap-3'>
-                    <button onClick={()=>{setSpeeed(0.5)}} className='text-gray-300 flex items-center gap-1'>0.5x <RiSpeedFill /></button>
-                    <button onClick={()=>{setSpeeed(10)}} className='text-gray-300 flex items-center gap-1'>1x <RiSpeedFill /></button>
-                    <button onClick={()=>{setSpeeed(20)}} className='text-gray-300 flex items-center gap-1'>2x <RiSpeedFill /></button>
-                    <button onClick={()=>{setSpeeed(30)}} className='text-gray-300 flex items-center gap-1'>3x <RiSpeedFill /></button>
-                    <button onClick={()=>{setSpeeed(40)}} className='text-gray-300 flex items-center gap-1'>4x <RiSpeedFill /></button>
+                  <div className='flex gap-3 justify-center items-center'>
+                    <button onClick={()=>{setSpeeed(0.5);handleChangePlaybackRate(0.25)}} className='text-gray-300 flex items-center gap-1'>0.5x <RiSpeedFill /></button>
+                    <button onClick={()=>{setSpeeed(10);handleChangePlaybackRate(0.95)}} className='text-gray-300 flex items-center gap-1'>1x <RiSpeedFill /></button>
+                    <button onClick={()=>{setSpeeed(30);handleChangePlaybackRate(1.05)}} className='text-gray-300 flex items-center gap-1'>3x <RiSpeedFill /></button>
+                    <button onClick={()=>{setSpeeed(50);handleChangePlaybackRate(1.5)}} className='text-gray-300 flex items-center gap-1'>5x <RiSpeedFill /></button>
                   </div>
               </div>
 
-              <div className='flex gap-3'>
-              <div className="flex items-center me-4">
-                  <input onChange={()=>{setRings(!rings)}} checked={rings} id="inline-radio" type="checkbox" value={rings} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+              <div className='flex gap-2 justify-center items-center'>
+              <div className="flex items-center me-2 cursor-pointer">
+                  <input onChange={()=>{setRings(!rings)}} checked={rings} id="inline-radio" type="checkbox" value={rings} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 cursor-pointer" />
                   <label htmlFor="inline-radio-1" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Rings</label>
               </div>
-              <div className="flex items-center me-4">
-                  <input onChange={()=>{setCubes(!cubes)}} checked={cubes} id="inline-radio" type="checkbox" value={cubes} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+              <div className="flex items-center me-2 cursor-pointer">
+                  <input onChange={()=>{setCubes(!cubes)}} checked={cubes} id="inline-radio" type="checkbox" value={cubes} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 cursor-pointer" />
                   <label htmlFor="inline-radio-2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cubes</label>
               </div>
 
-              <div className="flex items-center me-4">
-                  <input onChange={()=>{setCar(!car)}} checked={car} id="inline-radio" type="checkbox" value={car} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+              <div className="flex items-center me-2 cursor-pointer">
+                  <input onChange={()=>{setCar(!car)}} checked={car} id="inline-radio" type="checkbox" value={car} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 cursor-pointer" />
                   <label htmlFor="inline-radio-2" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Car</label>
               </div>
 
@@ -65,6 +125,9 @@ function App() {
           </div>
         
       </div>
+
+
+
     
     </section>
   );
