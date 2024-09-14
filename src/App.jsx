@@ -55,7 +55,7 @@ function App() {
   };
 
   const handlePauseAudio = () => {
-    console.log(audioRef);
+
     
     if (audioRef.current) {
       audioRef.current.pause();
