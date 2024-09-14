@@ -3,7 +3,7 @@ import React, { useContext, useRef, useState } from 'react'
 import { Vector3 } from 'three';
 
 
-export const Box = ({color,inMotion}) => {
+export const Box = ({color,inMotion,speed}) => {
     const boxRef = useRef();
     const timeRef = useRef();
     const [rotateX] = useState(Math.random());
@@ -33,7 +33,7 @@ export const Box = ({color,inMotion}) => {
 
     useFrame((state,delta)=>{
         if(inMotion){
-            timeRef.current += delta *1.2;
+            timeRef.current += delta *1.2*speed;
         let newZ = position.z - (timeRef.current);
         if(newZ < -10){
             resetPosition();
@@ -41,8 +41,8 @@ export const Box = ({color,inMotion}) => {
         }
         }
         boxRef.current.position.set(position.x,position.y,position.z);
-        boxRef.current.rotation.x += rotateX * delta;
-        boxRef.current.rotation.y += rotateY * delta;
+        boxRef.current.rotation.x += rotateX * delta *(speed/2);
+        boxRef.current.rotation.y += rotateY * delta *(speed/2);
     },[position,rotateX,rotateY])
 
   return (
@@ -56,7 +56,7 @@ export const Box = ({color,inMotion}) => {
   )
 }
 
-const Boxes = ({inMotion}) => {
+const Boxes = ({inMotion,speed}) => {
     return (
         <>
         {[0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
@@ -64,7 +64,7 @@ const Boxes = ({inMotion}) => {
         0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,
         0,0,0,0,0,0,0,0,0,0].map((v,i)=>{
             return (
-                <Box key={i} color={i%2==1 ? [0.4,0.1,0.1] : [0.05,0.15,0.4]} inMotion={inMotion} />
+                <Box key={i} color={i%2==1 ? [0.4,0.1,0.1] : [0.05,0.15,0.4]} inMotion={inMotion} speed={speed} />
             )
         })
         }

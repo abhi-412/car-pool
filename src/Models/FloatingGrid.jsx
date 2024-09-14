@@ -2,7 +2,7 @@ import { useFrame, useLoader } from '@react-three/fiber';
 import React, { useContext, useEffect, useRef } from 'react'
 import { RepeatWrapping, TextureLoader } from 'three';
 
-const FloatingGrid = ({inMotion}) => {
+const FloatingGrid = ({inMotion,speed}) => {
     const gridRef = useRef();
 
     const diffuse = useLoader(TextureLoader, import.meta.env.VITE_APP_API_URL + 'textures/grid-texture.png');
@@ -17,7 +17,7 @@ const FloatingGrid = ({inMotion}) => {
 
     useFrame((state)=>{
        if(inMotion){
-        let t = -state.clock.getElapsedTime();
+        let t = -state.clock.getElapsedTime()*speed;
         diffuse.offset.set(0, t);
        }
     })

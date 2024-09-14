@@ -3,7 +3,7 @@ import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
 
-const CarModel=({inMotion, ...props})=> {
+const CarModel=({inMotion,speed, ...props})=> {
   const { nodes, materials } = useGLTF('models/car.glb')
     const tyre1 = useRef();
     const tyre2 = useRef();
@@ -11,14 +11,14 @@ const CarModel=({inMotion, ...props})=> {
     const tyre4 = useRef();
 
   useFrame((state)=>{
-    let t = state.clock.getElapsedTime();
+    let t = state.clock.getElapsedTime()*speed;
     
 if(inMotion){
       
-  tyre1.current.rotation.x = t*2;
-  tyre2.current.rotation.x = t*2;
-  tyre3.current.rotation.x = t*2;
-  tyre4.current.rotation.x = t*2;
+  tyre1.current.rotation.x = t;
+  tyre2.current.rotation.x = t;
+  tyre3.current.rotation.x = t;
+  tyre4.current.rotation.x = t;
 }
 
     

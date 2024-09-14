@@ -7,10 +7,10 @@ import Boxes from './Box';
 import {Bloom, ChromaticAberration, DepthOfField, EffectComposer} from "@react-three/postprocessing";
 import {BlendFunction} from "postprocessing";
 import FloatingGrid from './FloatingGrid';
-const Car = ({inMotion}) => {
+const Car = ({inMotion,speed,rings,cubes,car}) => {
   return (
     <>
-        <PerspectiveCamera fov={50} makeDefault position={[3, 2, 5]} />
+        <PerspectiveCamera fov={30} makeDefault position={[3, 2, 5]} />
         <OrbitControls target={[0,0.35,0]} maxPolarAngle={1.45}/>
 
         <color args={[0,0,0]} attach={"background"} />
@@ -43,15 +43,15 @@ const Car = ({inMotion}) => {
             {(texture) => (
                 <>
                 <Environment map={texture} />
-                <CarModel position={[0,0,0]} scale={[0.005,0.005,0.005]} inMotion={inMotion} /> 
+                {car && <CarModel position={[0,0,0]} scale={[0.005,0.005,0.005]} inMotion={inMotion} speed={speed}/> }
                 </>
             )}
             
         </CubeCamera>   
-        <Ground inMotion = {inMotion} />
-        <Rings inMotion = {inMotion} />
-        <Boxes inMotion = {inMotion} />
-        <FloatingGrid inMotion = {inMotion} />
+        <Ground inMotion = {inMotion} speed={speed}/>
+        {rings &&<Rings inMotion = {inMotion} speed={speed}/>}
+      {cubes &&  <Boxes inMotion = {inMotion} speed={speed}/>}
+        <FloatingGrid inMotion = {inMotion} speed={speed}/>
 
         <EffectComposer>
             {/* <DepthOfField focusDistance={0.0035} focalLength={0.01} bokehScale={3} height={480} /> */}

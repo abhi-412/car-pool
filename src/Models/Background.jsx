@@ -5,7 +5,7 @@ import { RepeatWrapping, TextureLoader } from "three";
 import { LinearEncoding } from "@react-three/drei/helpers/deprecated";
 
 
-const Ground = ({inMotion})=> {
+const Ground = ({inMotion,speed})=> {
  
   const [roughness, normal] = useLoader(TextureLoader, [
     import.meta.env.VITE_APP_API_URL + "textures/terrain-roughness.jpg",
@@ -27,7 +27,7 @@ const Ground = ({inMotion})=> {
 
   useFrame((state)=>{
     if(inMotion){
-      let t = -state.clock.getElapsedTime() *0.128 ;
+      let t = -state.clock.getElapsedTime() *0.128*speed;
       normal.offset.set(0, t);
       roughness.offset.set(0, t)
     }
